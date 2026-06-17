@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>任性週報</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+    :root {
+      --bg:        #ede8de;
+      --cream:     #f5f0e4;
+      --card:      #ffffff;
+      --border:    #e0d5be;
+      --gold:      #b8914a;
+      --gold-pale: #f0e6cc;
+      --text:      #2e2416;
+      --text-mid:  #5a4830;
+      --text-dim:  #9a8868;
+      --shadow:    rgba(60,40,10,.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 30px 20px;
+      color: var(--text);
+    }
+
+    /* ─── Container ─── */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 2px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* ─── Header with breeze ─── */
+    .site-header {
+      background: var(--cream);
+      padding: 28px 30px 22px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 60'%3E%3Cpath d='M0,30 Q100,14 200,30 T400,30 T600,30 T800,30' stroke='rgba(184,145,74,0.13)' stroke-width='1.5' fill='none'/%3E%3Cpath d='M0,44 Q130,28 260,44 T520,44 T780,44' stroke='rgba(184,145,74,0.08)' stroke-width='1' fill='none'/%3E%3C/svg%3E") repeat-x center / 400px 60px,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 60'%3E%3Cpath d='M0,18 Q90,8 180,18 T360,18 T540,18 T720,18 T900,18' stroke='rgba(184,145,74,0.06)' stroke-width='1' fill='none'/%3E%3C/svg%3E") repeat-x center / 500px 60px;
+      animation: breeze1 9s linear infinite;
+    }
+    .site-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 60'%3E%3Cpath d='M0,35 Q120,50 240,35 T480,35 T720,35 T960,35' stroke='rgba(184,145,74,0.07)' stroke-width='1.2' fill='none'/%3E%3C/svg%3E") repeat-x center / 450px 60px;
+      animation: breeze2 14s linear infinite reverse;
+    }
+
+    @keyframes breeze1 {
+      from { background-position: 0 center, 0 center; }
+      to   { background-position: 400px center, 500px center; }
+    }
+    @keyframes breeze2 {
+      from { background-position: 0 center; }
+      to   { background-position: 450px center; }
+    }
+
+    .header-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .header-inner h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+    .week-pill {
+      display: inline-block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: .75rem;
+      color: var(--gold);
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    /* ─── Content area ─── */
+    .content {
+      padding: 28px 28px 24px;
+    }
+
+    /* ─── Zodiac tabs ─── */
+    .section-sep {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-dim);
+      font-size: .65rem;
+      letter-spacing: .2em;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .section-sep::before, .section-sep::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .zodiac-nav {
+      display: flex;
+      gap: 0;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--card);
+    }
+    .zodiac-btn {
+      flex: 1;
+      padding: 13px 10px;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--border);
+      color: var(--text-dim);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      transition: background .18s, color .18s;
+      line-height: 1.5;
+    }
+    .zodiac-btn:last-child { border-right: none; }
+    .zodiac-btn:hover { background: var(--cream); color: var(--text-mid); }
+    .zodiac-btn.active {
+      background: var(--gold-pale);
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .btn-dates { display: block; font-size: .65rem; opacity: .7; margin-top: 2px; font-weight: 400; }
+
+    /* ─── Section cards ─── */
+    .card {
+      background: #fafcfc;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      animation: fadeUp .3s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .06em;
+      flex: 1;
+    }
+    .card-en {
+      font-size: .68rem;
+      color: var(--text-dim);
+      letter-spacing: .08em;
+      font-weight: 400;
+    }
+
+    /* ─── Tarot ─── */
+    .tarot-layout {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 460px) { .tarot-layout { grid-template-columns: 1fr; } }
+
+    .tarot-card-vis {
+      width: 80px;
+      height: 126px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, #fdf7eb, #f0e6cc);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .tarot-card-vis.reversed { transform: rotate(180deg); }
+    .tc-symbol { font-size: 1.8rem; line-height: 1; }
+    .tc-name { font-size: .6rem; color: var(--gold); font-weight: 700; text-align: center; padding: 0 4px; }
+    .tc-rev-badge { font-size: .52rem; background: var(--gold-pale); border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; color: var(--gold); }
+
+    .tarot-info { display: flex; flex-direction: column; gap: 10px; }
+    .t-name-row { display: flex; align-items: baseline; gap: 6px; }
+    .t-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .t-rev-label { font-size: .7rem; color: var(--text-dim); }
+    .t-kw { font-size: .7rem; color: var(--text-dim); letter-spacing: .04em; }
+    .t-desc { font-size: .87rem; line-height: 1.9; color: var(--text-mid); margin-bottom: 16px; }
+    .t-desc br { display: block; content: ''; margin: 4px 0; }
+
+    .star-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 16px;
+    }
+    .star-row { display: flex; align-items: center; gap: 6px; }
+    .s-lbl { font-size: .7rem; color: var(--text-dim); min-width: 30px; font-weight: 500; }
+    .s-stars { color: var(--gold); font-size: .78rem; letter-spacing: 2px; }
+
+    /* ─── Mafalde ─── */
+    .quote-wrap {
+      position: relative;
+      background: var(--cream);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+      padding: 14px 18px 14px 22px;
+      margin-bottom: 14px;
+    }
+    .q-mark {
+      position: absolute;
+      top: 2px;
+      left: 6px;
+      font-size: 2.6rem;
+      color: var(--gold);
+      opacity: .2;
+      font-family: Georgia, serif;
+      line-height: 1;
+      user-select: none;
+    }
+    .q-text {
+      font-size: .9rem;
+      line-height: 1.9;
+      color: var(--text-mid);
+      font-style: italic;
+      position: relative;
+    }
+    .q-source { font-size: .68rem; color: var(--text-dim); margin-top: 8px; font-weight: 400; }
+
+    .tip-box {
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .tip-label { font-size: .68rem; color: var(--gold); letter-spacing: .1em; font-weight: 700; margin-bottom: 4px; display: block; }
+    .tip-text { font-size: .85rem; line-height: 1.8; color: var(--text-mid); font-weight: 400; }
+
+    .lucky-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 460px) { .lucky-grid { grid-template-columns: repeat(2, 1fr); } }
+    .lucky-box {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+      background: #fafafa;
+    }
+    .l-label { font-size: .6rem; color: var(--text-dim); display: block; margin-bottom: 3px; font-weight: 400; }
+    .l-value { font-size: .82rem; color: var(--text); font-weight: 700; }
+
+    /* ─── Header gorilla ─── */
+    .header-gorilla {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 88px;
+      width: auto;
+      object-fit: contain;
+      object-position: bottom right;
+      pointer-events: none;
+    }
+
+    /* ─── Cat trivia ─── */
+    .trivia-card-header {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 16px;
+      padding-bottom: 0;
+      gap: 0;
+    }
+    .trivia-title-group {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      align-self: flex-end;
+    }
+    .trivia-gorilla {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+      margin-left: 8px;
+      margin-bottom: -4px;
+    }
+
+    .trivia-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .trivia-item {
+      padding: 12px 14px;
+      background: var(--cream);
+      border-radius: 6px;
+      border-left: 2px solid var(--border);
+    }
+    .trivia-q {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .trivia-a {
+      font-size: .83rem;
+      line-height: 1.85;
+      color: var(--text-mid);
+      font-weight: 400;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center;
+      padding: 18px 30px 24px;
+      color: var(--text-dim);
+      font-size: .78rem;
+      line-height: 2;
+      font-weight: 400;
+      border-top: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C200,20 400,80 600,50 C800,20 1000,80 1200,50 L1200,0 L0,0 Z' fill='%23f5f0e4'/%3E%3C/svg%3E");
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="site-header">
+    <div class="header-inner">
+      <h1>任性週報</h1>
+      <div class="week-pill" id="week-label">載入中</div>
+    </div>
+    <img class="header-gorilla" id="header-gorilla-img" src="moods/0.png" alt="">
+  </header>
+
+  <div class="content">
+
+    <div class="section-sep">選擇星座</div>
+
+    <nav class="zodiac-nav">
+      <button class="zodiac-btn active" data-sign="aquarius">
+        水瓶座
+        <span class="btn-dates">1/20 – 2/18</span>
+      </button>
+      <button class="zodiac-btn" data-sign="virgo">
+        處女座
+        <span class="btn-dates">8/23 – 9/22</span>
+      </button>
+      <button class="zodiac-btn" data-sign="leo">
+        獅子座
+        <span class="btn-dates">7/23 – 8/22</span>
+      </button>
+    </nav>
+
+    <div class="card" id="tarot-card">
+      <div class="card-header">
+        <span class="card-title">每週塔羅運勢</span>
+        <span class="card-en">Weekly Tarot</span>
+      </div>
+      <div id="tarot-body"></div>
+    </div>
+
+    <div class="card" id="mafalde-card">
+      <div class="card-header">
+        <span class="card-title">每週瑪法達</span>
+        <span class="card-en">Mafalda Weekly</span>
+      </div>
+      <div id="mafalde-body"></div>
+    </div>
+
+
+  </div>
+
+  <footer class="footer">
+  </footer>
+
+</div>
+
+<script>
+const WEEK = '2026 年第 25 週　6/17 – 6/23';
+document.getElementById('week-label').textContent = WEEK;
+
+const T = {
+  star:   { name: '星星',  en: 'The Star',   symbol: '★', kw: '希望  靈感  療癒' },
+  sun:    { name: '太陽',  en: 'The Sun',    symbol: '◎', kw: '喜悅  成功  活力' },
+  hermit: { name: '隱者',  en: 'The Hermit', symbol: '◈', kw: '內省  智慧  耐心' },
+};
+
+const DATA = {
+  aquarius: {
+    tarot: {
+      card: T.star, rev: false,
+      desc: `涓滴成河，路遙知力。星星牌正位降臨，象徵積累與耐心終將開花結果。工作計畫按部就班，KPI 表現亮眼，接下來兩週有望迎來長期合約機會。\n\n財務管理得當將帶來豐厚回報，理性規劃優於衝動投資。感情方面平靜如水，愛情是無關風月的姿態，隨緣自在便是最好的狀態。`,
+      aspects: { love: 3, work: 4, money: 4, health: 4 },
+    },
+    mafalde: {
+      quote: '涓滴成河，路遙知力。驚喜不多、一切照常規進行的這段期間，靠著勤奮恆心、多做少錯與時間複利，能把「原子習慣」帶來的持續微進步，累積成可觀的規模。工作計畫執行順利，時效控制良好，產品良率與KPI指數也優於預期。未來兩週有簽下某有利長約、敲定合作計畫，或引進生財金雞母的契機。精明理財勝出。愛情是無關風月。',
+      src: '鏡週刊 瑪法達週運  6/17–6/23',
+      tip: '這週踏實做事，成果會說話。貓咪建議：慢慢吃飯比快快吃飯有飽足感，你懂的。',
+      lucky: { color: '電藍色', num: '7', day: '星期三', crystal: '海藍寶' },
+    },
+  },
+  virgo: {
+    tarot: {
+      card: T.hermit, rev: false,
+      desc: `見義勇為，大展身手。命星與戰星呈相濟之勢，勇氣與鬥志齊揚，整個人固執與魄力驚人。\n\n事業人氣可用，善加借勢造勢，助力公益理想。財運起伏，宜謹慎評估再出手。感情方面如同抽中幸福彩蛋，意外的甜蜜正在等著你。`,
+      aspects: { love: 4, work: 5, money: 3, health: 4 },
+    },
+    mafalde: {
+      quote: '見義勇為，大展身手。本週事業氣勢最強，適合主動出擊、展現領導力。感情抽中幸福彩蛋，財運有起伏，收支需平衡。',
+      src: '鏡週刊 瑪法達週運  6/17–6/23',
+      tip: '事業衝了，感情也順了，這種週不多，好好把握。貓咪表示：牠今天也表現得很好，需要一罐主食罐。',
+      lucky: { color: '橄欖綠', num: '4', day: '星期六', crystal: '紅瑪瑙' },
+    },
+  },
+  leo: {
+    tarot: {
+      card: T.sun, rev: false,
+      desc: `審時度勢，黎明不遠。轉進年度沉潛月的這段期間，宜藏鋒納氣、養精蓄銳，不利主動攻擊、自曝其短。\n\n此時適合完成未竟事宜、清淨身心、調整策略。待月底木星移入獅子座宮位，將迎來重大正向轉捩點。投資直覺漸趨敏銳，愛情帶來沉浸式的幸福感受。`,
+      aspects: { love: 4, work: 4, money: 4, health: 4 },
+    },
+    mafalde: {
+      quote: '審時度勢，黎明不遠。本週宜藏鋒養氣、收尾舊事，不利主動攻擊或自曝其短。月底木星入獅子，大好轉機即將到來。',
+      src: '鏡週刊 瑪法達週運  6/17–6/23',
+      tip: '先蹲後跳。貓咪最懂這個——牠可以在同一個地方蹲三十分鐘，然後一躍而上精準命中目標。',
+      lucky: { color: '金橘色', num: '1', day: '星期日', crystal: '虎眼石' },
+    },
+  },
+};
+
+const _TRIVIA_BANK_UNUSED = [
+  { q: '凌晨四點被踩臉踩醒，睜眼牠在看你', a: '牠餓了。沒有直接叫你，選擇用體重溝通。你沒有生氣，還起來開罐頭。這就是貓奴，沒有為什麼。' },
+  { q: '你叫牠名字，牠看你一眼又把頭轉走', a: '研究證實貓聽得懂自己的名字。牠就是選擇不理你。這不叫忽視，這叫充分理解之後的主動決定。' },
+  { q: '你剛換好床單，牠立刻跳上去踩', a: '不是故意的，是剛好。但每次都剛好，這就值得懷疑了。' },
+  { q: '你在哭，牠走過來坐在你旁邊', a: '牠能察覺你的心跳和呼吸頻率變化。牠不是偶然來的，牠知道。只是不會說，也不需要說。' },
+  { q: '你花三千買的玩具，牠玩包裝盒', a: '沒有任何解釋可以讓這件事變得合理。你只能接受，然後下次還是繼續買。' },
+  { q: '半夜三點客廳傳來巨響', a: '牠把你放桌上的東西推下去了。牠知道你在睡覺。牠就是要推。' },
+  { q: '你不理牠，牠偏要來坐在你臉上', a: '你主動找牠，牠走掉。你假裝不在乎，牠馬上過來。你永遠贏不了這場遊戲，而牠很清楚。' },
+  { q: '你出門五分鐘回來，牠用「你消失了一個世紀」的眼神看你', a: '貓的時間感和人不同。五分鐘對牠可能真的很長。或者牠只是在演，你也不確定。' },
+  { q: '獸醫說「你家貓很乖」，你沉默了三秒', a: '在家翻垃圾桶、半夜亂叫、把你耳機咬斷的，和眼前這隻一臉無辜的，是同一隻貓。你不知道該怎麼解釋。' },
+  { q: '牠在你工作時坐在鍵盤上', a: '牠不是要幫你打字。牠是要你停下來。而且每次都有效。' },
+  { q: '你買了新沙發，牠當天就抓花', a: '牠不是故意破壞。抓東西是標記領域的行為，新沙發有陌生氣味，牠在宣示主權。你的家，是牠的家。' },
+  { q: '牠喝水一定要喝你杯子裡的', a: '流動的水比碗裡的水安全，這是本能。但牠的水碗也有流動功能，你花錢買的。牠偏不喝。' },
+  { q: '你準備出門，牠突然變得很黏', a: '牠感應到你要離開了。包包的聲音、換衣服的動作，牠都記住了。牠不說「不要走」，只是坐在你腳邊。' },
+  { q: '牠把你的外套推下椅子，然後睡上去', a: '你的氣味讓牠安心。推下去是因為要鋪平，不是在欺負你。其實有點感人。但外套皺了。' },
+  { q: '你生病躺著，牠來幫你壓胸口', a: '貓咪的咕嚕聲頻率在25–150Hz之間，這個範圍能促進骨骼和組織修復。牠可能真的在幫你。也可能只是覺得你很暖。兩件事都是真的。' },
+  { q: '牠每天固定在同一個時間叫你起床', a: '比鬧鐘準。而且無法關掉、無法貪睡、無法忽略。你養了一個生理時鐘。' },
+  { q: '你罵牠，牠用緩慢眨眼回應你', a: '緩慢眨眼在貓的語言裡是「我信任你」「我放鬆」的訊號。你在罵牠，牠在愛你。這場溝通完全失敗。' },
+  { q: '牠在你最忙的時候跑來要抱抱', a: '時機選得永遠不對。但你還是放下手邊的事。因為牠主動要抱抱這件事，一個月可能只發生幾次。你不敢錯過。' },
+  { q: '你去廁所，牠在門外等', a: '你是牠的人。你去了哪裡牠都要知道。廁所也不例外。有時候你覺得煩，有時候覺得被需要的感覺還不錯。' },
+  { q: '牠把你的頭髮叼走', a: '可能是收集，可能是當玩具，可能是覺得那是貓毛。原因不明，但你在洗手間角落找到一堆的時候，不知道是該笑還是該怕。' },
+  { q: '你擠出空間讓牠睡，自己睡床邊', a: '你本來說不要讓牠上床的。你本來說的。現在你睡床邊，牠睡中間，而且擺大字型。你沒有後悔，只是不想承認。' },
+  { q: '牠對著空氣盯著看', a: '可能是感應到超音波、氣流、小蟲。也可能什麼都沒有。你跟著看了三十秒，什麼也沒發現，但還是有點毛。' },
+  { q: '你拍牠，牠把你的手推開', a: '不是不喜歡你。是現在不想被摸。貓有明確的「夠了」訊號——耳朵壓平、尾巴甩動、皮膚抖動。你沒注意到，繼續摸，然後被咬。這是你的錯。' },
+  { q: '你說「不可以」，牠看著你繼續做', a: '「不可以」這三個字對貓沒有約束力。牠聽得懂你在說話，但你說的內容對牠不具意義。你需要讓後果發生，不是說話。' },
+  { q: '牠嘔吐物永遠在你最難清理的地方', a: '地毯、床上、白色的東西旁邊。牠不是故意的，但概率統計告訴你，光滑好清的地板從來不是第一選擇。' },
+  { q: '你難過，牠搗亂你更難過', a: '牠不知道你難過，牠只知道你停下來了，不動了，可以搗亂了。時機很差，但這件事跟你的情緒無關。' },
+  { q: '你試著拍牠的影片，牠立刻停止可愛的動作', a: '每次都這樣。剛才還在做的事，手機一出現就停了。你有一百個「差點拍到」的回憶，沒有一個成功的影片。' },
+  { q: '你把牠抱起來，牠掙扎；你放下牠，牠不走', a: '牠不想被抱，但也不想離開你。這兩件事同時是真的。貓的邏輯不需要一致，你接受就好。' },
+  { q: '牠在你的重要文件上打滾', a: '牠不知道那是重要文件。牠只知道你剛才很專注地看那張紙，那張紙比牠重要，這件事不可以。' },
+  { q: '牠把你種的植物咬掉', a: '有些植物的氣味對貓有吸引力。有些只是長在牠覺得礙事的地方。你要先確認那植物對貓無毒，然後接受這個結果。' },
+  { q: '你的來電，牠先聽到', a: '貓的聽覺頻率範圍是人類的兩倍以上。你的手機震動，牠比你早兩秒反應。每次都是。' },
+  { q: '牠在你腿上睡著了，你憋著不動兩個小時', a: '你口渴、腿麻、有急事。你還是沒動。因為牠睡著的樣子讓你覺得不可以打擾。這是斯德哥爾摩症候群，而且你甘之如飴。' },
+  { q: '你唱歌，牠走掉', a: '貓對某些頻率敏感，高頻或不規律的聲音讓牠不舒服。牠不是在評價你，只是在保護自己的耳朵。效果差不多。' },
+  { q: '牠裝作沒看到你，但耳朵朝向你', a: '牠在聽你。眼睛看別的地方只是在維持「我不在乎」的人設。耳朵不會說謊。' },
+  { q: '剛打掃完，牠進沙盒然後帶沙出來', a: '計時精準，每次都這樣。你已經不生氣了，只是覺得這是某種宇宙的安排。' },
+  { q: '牠舔你然後咬你', a: '舔是梳理行為，代表你是牠的同伴。咬是因為梳理過程中覺得你這個同伴不夠配合。愛與攻擊之間只差零點三秒。' },
+  { q: '牠把食物撥出碗外再吃', a: '野生貓科動物不在獵物死亡的地方吃東西，會把肉撥離原地。你的貓住在公寓，但本能還在。碗邊永遠有一圈食物。' },
+  { q: '你做瑜珈，牠坐在你臉上', a: '你趴下來，對牠而言就是邀請。你的臉是最舒適的座位之一。你試著繼續做，失敗了。這就是養貓做瑜珈的日常。' },
+  { q: '牠對著門外低吼，你去看什麼都沒有', a: '可能是氣味、聲音、另一隻貓。牠的感知範圍比你大得多。沒有不代表真的沒有，只代表你感應不到。' },
+  { q: '你摺好的衣服，牠躺上去', a: '溫熱、有你氣味、剛被整理過所以特別平整。對貓來說是完美的床。對你來說是剛摺好的白T。' },
+  { q: '牠每次你要視訊的時候出現', a: '視訊代表你盯著螢幕說話，對牠來說你在浪費注意力在一個不存在的對象上。牠需要介入。你的朋友已經認識牠了。' },
+  { q: '牠偷吃你的食物，你看著牠，牠繼續吃', a: '牠知道你在看。牠評估過後果，決定值得。有時候你覺得這是侮辱，有時候你覺得這是自信。' },
+  { q: '你睡了，牠開始活動；你醒了，牠去睡', a: '這不是巧合，也不是針對你。貓是晨昏型動物，天亮和天黑前後是活躍時間。你的作息和牠的本能剛好錯開。每天都這樣。' },
+  { q: '牠把你的充電線咬斷', a: '第一條：你以為是意外。第二條：你開始懷疑。第三條：你買了防咬套。牠把防咬套咬掉了。' },
+  { q: '牠只喝你幫牠裝的水，不喝放著的', a: '不是水質問題，是儀式感問題。你幫牠裝的那杯是新鮮的，有你在場，有你的手。牠要的是這個。' },
+  { q: '你回家，牠假裝不在乎，但跟著你到處走', a: '牠不會跑過來迎接，那太狗了。但牠會跟著你從玄關到廚房到廁所。默默的，不說什麼。' },
+  { q: '牠趁你不注意偷喝你的咖啡', a: '咖啡因對貓有毒，你嚇到了。牠喝了一口，若無其事走掉。你盯著牠觀察了兩小時，牠睡得很好。' },
+  { q: '牠在陌生人面前特別乖', a: '你的朋友說「好乖的貓」。你微笑點頭，沒有解釋。有些事讓他們繼續以為就好。' },
+  { q: '你說話，牠歪著頭看你', a: '牠在解析你發出的聲音頻率和語調。歪頭是為了讓耳朵收到更好的立體聲。牠真的在聽，只是不一定想回應。' },
+  { q: '牠把你鬧鐘鬧之前五分鐘叫醒你', a: '每天準時。你已經懷疑牠能看懂時鐘。但更可能的是，牠感應到你在淺眠，判斷現在是最佳時機。結果一樣：你醒了。' },
+  { q: '你抱怨牠，但牠一靠近你就心軟', a: '你剛才說「這隻貓真的很煩」。牠走過來，用頭蹭你的手。你說「好啦好啦」。這場對話每週至少發生三次。' },
+  { q: '牠在你難受的時候發出咕嚕聲', a: '咕嚕聲的頻率對人體有輕微的鎮靜效果，這已經有研究支持。牠可能知道，也可能不知道。但你聽到的時候，確實好一點了。' },
+];
+
+const now = new Date();
+const start = new Date(now.getFullYear(), 0, 0);
+const weekOfYear = Math.floor((now - start) / (7 * 24 * 3600 * 1000));
+
+function stars(n, max = 5) {
+  return `<span class="s-stars">${'★'.repeat(n)}${'☆'.repeat(max - n)}</span>`;
+}
+
+function renderTarot(d) {
+  const { card, rev, desc, aspects } = d;
+  return `
+    <div class="tarot-layout">
+      <div class="tarot-card-vis${rev ? ' reversed' : ''}">
+        <span class="tc-symbol">${card.symbol}</span>
+        <span class="tc-name">${card.name}</span>
+        ${rev ? '<span class="tc-rev-badge">逆位</span>' : ''}
+      </div>
+      <div class="tarot-info">
+        <div class="t-name-row">
+          <span class="t-name">${card.name}</span>
+          ${rev ? '<span class="t-rev-label">逆位</span>' : ''}
+        </div>
+        <div class="t-kw">${card.en}　${card.kw}</div>
+        <p class="t-desc">${desc.replace(/\n\n/g, '<br><br>')}</p>
+        <div class="star-grid">
+          <div class="star-row"><span class="s-lbl">愛情</span>${stars(aspects.love)}</div>
+          <div class="star-row"><span class="s-lbl">事業</span>${stars(aspects.work)}</div>
+          <div class="star-row"><span class="s-lbl">財運</span>${stars(aspects.money)}</div>
+          <div class="star-row"><span class="s-lbl">健康</span>${stars(aspects.health)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderMafalde(d) {
+  const { quote, src, tip, lucky } = d;
+  return `
+    <div class="quote-wrap">
+      <span class="q-mark">"</span>
+      <p class="q-text">${quote}</p>
+      <div class="q-source">${src}</div>
+    </div>
+    <div class="tip-box">
+      <span class="tip-label">貓咪本週說</span>
+      <p class="tip-text">${tip}</p>
+    </div>
+    <div class="lucky-grid">
+      <div class="lucky-box"><span class="l-label">幸運色</span><span class="l-value">${lucky.color}</span></div>
+      <div class="lucky-box"><span class="l-label">幸運數</span><span class="l-value">${lucky.num}</span></div>
+      <div class="lucky-box"><span class="l-label">吉日</span><span class="l-value">${lucky.day}</span></div>
+      <div class="lucky-box"><span class="l-label">水晶</span><span class="l-value">${lucky.crystal}</span></div>
+    </div>`;
+}
+
+function loadSign(key) {
+  const d = DATA[key]; if (!d) return;
+  ['tarot-card', 'mafalde-card'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.animation = 'none'; void el.offsetHeight; el.style.animation = '';
+  });
+  document.getElementById('tarot-body').innerHTML   = renderTarot(d.tarot);
+  document.getElementById('mafalde-body').innerHTML = renderMafalde(d.mafalde);
+}
+
+const btns = document.querySelectorAll('.zodiac-btn');
+btns.forEach(b => b.addEventListener('click', () => {
+  btns.forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  loadSign(b.dataset.sign);
+}));
+
+loadSign('aquarius');
+</script>
+</body>
+</html>
