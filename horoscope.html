@@ -597,12 +597,20 @@ function renderMafalde(d) {
 
 function loadSign(key) {
   const d = DATA[key]; if (!d) return;
-  ['tarot-card', 'mafalde-card'].forEach(id => {
-    const el = document.getElementById(id);
-    el.style.animation = 'none'; void el.offsetHeight; el.style.animation = '';
+
+  // Force reflow to ensure animation triggers properly
+  requestAnimationFrame(() => {
+    ['tarot-card', 'mafalde-card'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.animation = 'none';
+      void el.offsetHeight;
+      el.style.animation = '';
+    });
+
+    // Render content
+    document.getElementById('tarot-body').innerHTML   = renderTarot(d.tarot);
+    document.getElementById('mafalde-body').innerHTML = renderMafalde(d.mafalde);
   });
-  document.getElementById('tarot-body').innerHTML   = renderTarot(d.tarot);
-  document.getElementById('mafalde-body').innerHTML = renderMafalde(d.mafalde);
 }
 
 const btns = document.querySelectorAll('.zodiac-btn');
@@ -612,7 +620,12 @@ btns.forEach(b => b.addEventListener('click', () => {
   loadSign(b.dataset.sign);
 }));
 
-loadSign('aquarius');
+// Ensure DOM is fully ready before initial load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => loadSign('aquarius'));
+} else {
+  loadSign('aquarius');
+}
 </script>
 </body>
 </html>
